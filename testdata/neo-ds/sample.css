@@ -1,0 +1,6 @@
+@media screen and (min-width: 10px) {
+  .box:not(.hidden) {
+    display: flex;
+    color: red;
+  }
+}
