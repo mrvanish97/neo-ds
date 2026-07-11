@@ -2,7 +2,7 @@
 
 ## Project intent
 
-`neo-ds` is a semantic colorscheme framework for Neovim. Preserve the data flow:
+`neo-ds` stands for Neovim Design System. It is a semantic colorscheme framework for Neovim. Preserve the data flow:
 
 ```text
 primitives -> semantic palette -> roles -> highlight integrations

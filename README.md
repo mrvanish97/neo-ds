@@ -1,6 +1,6 @@
-# neo-ds
+# neo-ds — Neovim Design System
 
-`neo-ds` is a semantic colorscheme framework for Neovim. Themes provide concrete colors while editor and plugin integrations consume stable design-system roles.
+`neo-ds` stands for **Neovim Design System**. It is a semantic colorscheme framework for Neovim: themes provide concrete colors while editor and plugin integrations consume stable design-system roles.
 
 > [!CAUTION]
 > This repository is 100% vibe-coded. No human has ever read a single line of this code. My sincere apologies to all Lua and Neovim enthusiasts who find the solutions in this repository insulting to their taste.
