@@ -107,7 +107,6 @@ local theme = {
     },
   },
 
-  ---@type NeoDs.ThemePalette
   palette = {
     background = {
       primary = "primitive.neutral.0",
