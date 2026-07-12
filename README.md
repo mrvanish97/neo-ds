@@ -1,5 +1,8 @@
 # neo-ds - Neovim Design System
 
+> [!CAUTION]
+> This repository, including both code and documentation, is 100% vibe-coded. No human has ever read a single line of this code. My sincere apologies to all Lua and Neovim enthusiasts who find the solutions in this repository insulting to their taste.
+
 `neo-ds` stands for **Neovim Design System**.
 
 Neovim themes usually wire colors directly to highlight groups: `Normal`, `CursorLine`, `DiagnosticError`, `SnacksPickerMatch`, `TelescopeSelection`, Tree-sitter captures, and hundreds of other names owned by different parts of the editor and plugin ecosystem.
@@ -29,9 +32,6 @@ primitives -> semantic palette -> roles -> highlight integrations
 ```
 
 This gives theme authors one place to define the visual system, and integration authors one stable vocabulary to target. A picker match, a search result, a diagnostic, and a Git diff can stay visually consistent without every plugin mapping knowing the exact hex colors.
-
-> [!CAUTION]
-> This repository is 100% vibe-coded. No human has ever read a single line of this code. My sincere apologies to all Lua and Neovim enthusiasts who find the solutions in this repository insulting to their taste.
 
 ## What This Is
 
