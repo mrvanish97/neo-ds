@@ -13,30 +13,9 @@ That means a simple preference like "make matches purple", "make popups less noi
 
 `neo-ds` adds a mapping layer between semantic meaning and colorization. You describe what a thing means once, and `neo-ds` maps that decision to the highlight groups used by Neovim and supported plugins.
 
-For example:
-
-```lua
----@type NeoDs.ThemePalette
-local palette = {
-  accent = {
-    primary = "#0f68a0",
-    secondary = "#ad3da4",
-  },
-}
-
-require("neo-ds").setup({
-  palette = palette,
-  roles = {
-    ["interaction.match"] = { fg = "accent.secondary", style = "bold" },
-    ["entity.directory"] = { fg = "accent.primary", style = "bold" },
-    ["float.border"] = { fg = "border.subtle", bg = "background.float" },
-  },
-})
-```
-
-With those few semantic overrides, every integration that uses `interaction.match`, `entity.directory`, or `float.border` follows the same visual decision. You do not need to separately remember how Snacks, Telescope, Neo-tree, completion popups, and built-in search each name their highlights.
-
 Concrete themes provide the base palette. Your config can then adjust semantic roles instead of patching random highlight groups one by one.
+
+If you only need to override a few semantic roles in an existing setup, do that through `require("neo-ds").setup()`. The full theme-authoring scaffold below shows the canonical structure for new themes.
 
 ## What This Is
 
