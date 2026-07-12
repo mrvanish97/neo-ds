@@ -66,6 +66,20 @@ That separation lets the same integration work with different light and dark the
 
 - [ycode-nvim-theme](https://github.com/mrvanish97/ycode-nvim-theme) - a thin concrete theme package built on top of `neo-ds`
 
+## Similar Projects
+
+There are several good Neovim color tools in this space. They differ mostly in where they put the customization boundary.
+
+| Project | What it optimizes for | Customization model | How `neo-ds` differs |
+| --- | --- | --- | --- |
+| [themer.lua](https://github.com/ThemerCorp/themer.lua) | A bundled theme system with supported plugin mappings, palette remaps, highlight remaps, live reload, picker, installer, and exports. | Choose a bundled theme, adjust styles, remap palette or highlights, enable plugin groups. | This is the closest conceptual neighbor. `neo-ds` is narrower: it does not try to be a theme gallery, installer, exporter, or picker. It focuses on a strict semantic role layer that separate theme packages can target. |
+| [lush.nvim](https://github.com/rktjmp/lush.nvim) | Authoring colorschemes with live feedback, color manipulation, structure, and export options. | Write a theme through Lush's Lua DSL, often close to highlight-group definitions. | Lush is a theme creation aid. `neo-ds` is a runtime semantic mapping layer for themes and integrations. |
+| [colorbuddy.nvim](https://github.com/tjdevries/colorbuddy.nvim) | Quick Lua-based colorscheme construction with named colors, groups, and color operations. | Define `Color` and `Group` values, including groups derived from other groups. | Colorbuddy makes highlight authoring nicer. `neo-ds` tries to avoid direct highlight authoring for normal customization by routing changes through roles. |
+| [base16-nvim](https://github.com/RRethy/base16-nvim) | Building Neovim colorschemes from the Base16 palette convention, including LSP and Tree-sitter support. | Provide or select a 16-color Base16 palette. | Base16 is deliberately compact and portable. `neo-ds` uses a larger semantic vocabulary so plugin UI concepts can be tuned by meaning, not only by palette slot. |
+| [mini.hues](https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-hues.md) | Generating configurable color schemes from background, foreground, hue count, saturation, and accent options. | Configure generator inputs and optional plugin integration. | `mini.hues` is a generator. `neo-ds` is a contract between concrete themes, user overrides, and highlight integrations. |
+
+The tradeoff is intentional: `neo-ds` is less useful if you want a large catalog of ready-made themes or export targets. It is more useful if your problem is keeping editor, syntax, diagnostics, picker, explorer, completion, and plugin UI colors consistent through semantic decisions like `interaction.match`, `entity.directory`, `float.border`, or `diagnostic.error`.
+
 ## Requirements
 
 - Neovim 0.10 or newer
