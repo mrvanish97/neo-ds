@@ -1,5 +1,15 @@
 {
   "enabled": true,
   "missing": null,
-  "count": 3
+  "count": 3,
+  "items": [
+    {
+      "name": "alpha",
+      "tags": ["a", "b"]
+    },
+    {
+      "name": "beta",
+      "tags": []
+    }
+  ]
 }

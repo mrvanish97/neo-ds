@@ -14,7 +14,6 @@ local theme = {
     red = "#af0000",
     yellow = "#af8700",
   },
-  ---@type NeoDs.ThemePalette
   palette = {
     background = {
       primary = "primitive.white",

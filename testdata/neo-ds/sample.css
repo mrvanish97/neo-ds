@@ -1,6 +1,14 @@
-@media screen and (min-width: 10px) {
-  .box:not(.hidden) {
-    display: flex;
-    color: red;
+:root {
+  --accent: #005faf;
+  color: color-mix(in srgb, var(--accent) 60%, white);
+}
+
+@supports (display: grid) {
+  @media screen and (min-width: 10px) {
+    .box:not(.hidden)[data-kind="primary"]::before {
+      content: "badge";
+      display: inline-block;
+      width: calc(100% - 1rem);
+    }
   }
 }

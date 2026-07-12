@@ -10,7 +10,19 @@ type Reader interface {
 }
 
 type Item struct {
-	Name string
+	Name string `json:"name"`
+	Count int
+}
+
+type Box struct {
+	Items map[string]Item
+}
+
+func (b *Box) Add(name string, count int) {
+	if b.Items == nil {
+		b.Items = make(map[string]Item)
+	}
+	b.Items[name] = Item{Name: name, Count: count}
 }
 
 func main() {
@@ -38,5 +50,11 @@ func main() {
 
 	if true {
 		return
+	}
+
+	box := &Box{}
+	box.Add("first", 1)
+	for name, item := range box.Items {
+		fmt.Println(name, item.Count)
 	}
 }
