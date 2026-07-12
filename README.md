@@ -1,7 +1,7 @@
-# neo-ds - Neovim Design System
-
 > [!CAUTION]
 > This repository, including both code and documentation, is 100% vibe-coded. No human has ever read a single line of this code. My sincere apologies to all Lua and Neovim enthusiasts who find the solutions in this repository insulting to their taste.
+
+# neo-ds - Neovim Design System
 
 `neo-ds` stands for **Neovim Design System**.
 
