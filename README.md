@@ -77,40 +77,68 @@ Concrete themes should stay palette-only. They define raw primitives, map those 
 
 Use the LuaLS types from [lua/neo-ds/types.lua](lua/neo-ds/types.lua) when writing theme files. The annotations are not required at runtime; `require("neo-ds.theme").define()` still validates plain Lua tables. They are recommended because they make the semantic token hierarchy discoverable through editor completion and keep theme data aligned with the documented contract.
 
+Create a colorscheme file such as `colors/example-light.lua`:
+
 ```lua
 ---@type NeoDs.Theme
 local theme = {
   name = "example-light",
   background = "light",
+
   primitives = {
     neutral = {
       ["0"] = "#ffffff",
+      ["100"] = "#f0f0f0",
+      ["600"] = "#68717a",
       ["1000"] = "#000000",
     },
+
     blue = {
       primary = "#0f68a0",
       selection = "#dcecff",
     },
+
     magenta = {
       primary = "#ad3da4",
     },
+
+    red = {
+      primary = "#d12f1b",
+    },
   },
+
+  ---@type NeoDs.ThemePalette
   palette = {
     background = {
       primary = "primitive.neutral.0",
+      secondary = "primitive.neutral.100",
       selection = "primitive.blue.selection",
     },
+
     foreground = {
       primary = "primitive.neutral.1000",
+      secondary = "primitive.neutral.600",
     },
+
     accent = {
       primary = "primitive.blue.primary",
       secondary = "primitive.magenta.primary",
     },
+
+    feedback = {
+      danger = "primitive.red.primary",
+    },
+
+    syntax = {
+      keyword = {
+        primary = "accent.secondary",
+        secondary = "foreground.primary",
+      },
+    },
   },
 }
 
-return require("neo-ds.theme").define(theme)
+require("neo-ds").load(require("neo-ds.theme").define(theme))
 ```
 
 For larger themes, annotating subtrees can make the registry easier to use while editing:
@@ -187,22 +215,21 @@ With lazy.nvim:
 Configure optional overrides before loading a colorscheme:
 
 ```lua
----@type NeoDs.ThemePalette
-local palette = {
-  -- accent = { primary = "#0f62fe" },
-}
-
 require("neo-ds").setup({
   integrations = {
     community = true,
     snacks = true,
   },
-  palette = palette,
+  palette = {
+    accent = {
+      primary = "#0f62fe",
+    },
+  },
   roles = {
-    -- ["entity.directory"] = { fg = "accent.primary", style = "bold" },
+    ["entity.directory"] = { fg = "accent.primary", style = "bold" },
   },
   highlights = {
-    -- MyHighlight = "interaction.match",
+    MyHighlight = "interaction.match",
   },
 })
 ```
