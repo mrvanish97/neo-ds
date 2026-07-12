@@ -5,33 +5,35 @@
 
 `neo-ds` stands for **Neovim Design System**.
 
-Neovim themes usually wire colors directly to highlight groups: `Normal`, `CursorLine`, `DiagnosticError`, `SnacksPickerMatch`, `TelescopeSelection`, Tree-sitter captures, and hundreds of other names owned by different parts of the editor and plugin ecosystem.
+## Why This Exists
 
-That works, but it does not scale well. The same visual decision gets repeated in many places, and each integration has to decide for itself what a match, border, selected item, warning, reference, or inactive surface should look like.
+Neovim appearance is hard to tune because colors are usually attached directly to hundreds of unrelated highlight groups: core editor UI, Tree-sitter captures, diagnostics, LSP references, Snacks picker, Telescope, completion menus, file explorers, statuslines, and more.
 
-`neo-ds` exists to put a semantic mapping layer between meaning and colorization.
+That means a simple preference like "make matches purple", "make popups less noisy", or "make directory names bold blue" can require hunting through plugin-specific highlight names.
 
-Instead of every integration picking concrete colors, integrations describe what something means:
+`neo-ds` adds a mapping layer between semantic meaning and colorization. You describe what a thing means once, and `neo-ds` maps that decision to the highlight groups used by Neovim and supported plugins.
 
-```text
-popup
-float.border
-interaction.match
-diagnostic.error
-git.added
-entity.directory
-syntax.keyword.primary
+For example:
+
+```lua
+require("neo-ds").setup({
+  palette = {
+    accent = {
+      primary = "#0f68a0",
+      secondary = "#ad3da4",
+    },
+  },
+  roles = {
+    ["interaction.match"] = { fg = "accent.secondary", style = "bold" },
+    ["entity.directory"] = { fg = "accent.primary", style = "bold" },
+    ["float.border"] = { fg = "border.subtle", bg = "background.float" },
+  },
+})
 ```
 
-Concrete themes provide color palettes. `neo-ds` maps those semantic roles to Neovim highlight groups.
+With those few semantic overrides, every integration that uses `interaction.match`, `entity.directory`, or `float.border` follows the same visual decision. You do not need to separately remember how Snacks, Telescope, Neo-tree, completion popups, and built-in search each name their highlights.
 
-The data flow is:
-
-```text
-primitives -> semantic palette -> roles -> highlight integrations
-```
-
-This gives theme authors one place to define the visual system, and integration authors one stable vocabulary to target. A picker match, a search result, a diagnostic, and a Git diff can stay visually consistent without every plugin mapping knowing the exact hex colors.
+Concrete themes provide the base palette. Your config can then adjust semantic roles instead of patching random highlight groups one by one.
 
 ## What This Is
 
@@ -47,6 +49,18 @@ It intentionally does not ship a concrete theme. It provides:
 - optional visualization of palette references through `nvim-colorizer.lua`
 
 Concrete themes must be created with `require("neo-ds.theme").define({...})`. The constructor provides a `NeoDs.Theme` LuaLS contract and rejects unknown fields, malformed palette branches, role overrides, and direct highlight overrides at runtime.
+
+## How It Works
+
+The internal flow is:
+
+```text
+primitives -> semantic palette -> roles -> highlight integrations
+```
+
+Integrations should target semantic roles such as `popup`, `interaction.match`, `diagnostic.error`, `git.added`, `entity.directory`, and `syntax.keyword.primary`. They should not depend on concrete primitive colors such as `primitive.blue.60`.
+
+That separation lets the same integration work with different light and dark themes while preserving the theme author's visual intent.
 
 ## Theme Examples
 
