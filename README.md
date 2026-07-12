@@ -16,13 +16,16 @@ That means a simple preference like "make matches purple", "make popups less noi
 For example:
 
 ```lua
-require("neo-ds").setup({
-  palette = {
-    accent = {
-      primary = "#0f68a0",
-      secondary = "#ad3da4",
-    },
+---@type NeoDs.ThemePalette
+local palette = {
+  accent = {
+    primary = "#0f68a0",
+    secondary = "#ad3da4",
   },
+}
+
+require("neo-ds").setup({
+  palette = palette,
   roles = {
     ["interaction.match"] = { fg = "accent.secondary", style = "bold" },
     ["entity.directory"] = { fg = "accent.primary", style = "bold" },
@@ -48,7 +51,9 @@ It intentionally does not ship a concrete theme. It provides:
 - editor, Tree-sitter, LSP, and plugin integrations
 - optional visualization of palette references through `nvim-colorizer.lua`
 
-Concrete themes must be created with `require("neo-ds.theme").define({...})`. The constructor provides a `NeoDs.Theme` LuaLS contract and rejects unknown fields, malformed palette branches, role overrides, and direct highlight overrides at runtime.
+Concrete themes must be created with `require("neo-ds.theme").define({...})`. The `NeoDs.Theme` LuaLS contract documents the theme shape, and the constructor rejects unknown fields, malformed palette branches, role overrides, and direct highlight overrides at runtime.
+
+The semantic palette contract is documented in [lua/neo-ds/types.lua](lua/neo-ds/types.lua). Treat that file as the registry for available semantic tokens: it contains the hierarchy, LuaLS types, and short descriptions for every palette field that a concrete theme may define.
 
 ## How It Works
 
@@ -65,6 +70,71 @@ That separation lets the same integration work with different light and dark the
 ## Theme Examples
 
 - [ycode-nvim-theme](https://github.com/mrvanish97/ycode-nvim-theme) - a thin concrete theme package built on top of `neo-ds`
+
+## Writing a Theme
+
+Concrete themes should stay palette-only. They define raw primitives, map those primitives into the semantic palette, and let `neo-ds` compile roles and integrations.
+
+Use the LuaLS types from [lua/neo-ds/types.lua](lua/neo-ds/types.lua) when writing theme files. The annotations are not required at runtime; `require("neo-ds.theme").define()` still validates plain Lua tables. They are recommended because they make the semantic token hierarchy discoverable through editor completion and keep theme data aligned with the documented contract.
+
+```lua
+---@type NeoDs.Theme
+local theme = {
+  name = "example-light",
+  background = "light",
+  primitives = {
+    neutral = {
+      ["0"] = "#ffffff",
+      ["1000"] = "#000000",
+    },
+    blue = {
+      primary = "#0f68a0",
+      selection = "#dcecff",
+    },
+    magenta = {
+      primary = "#ad3da4",
+    },
+  },
+  palette = {
+    background = {
+      primary = "primitive.neutral.0",
+      selection = "primitive.blue.selection",
+    },
+    foreground = {
+      primary = "primitive.neutral.1000",
+    },
+    accent = {
+      primary = "primitive.blue.primary",
+      secondary = "primitive.magenta.primary",
+    },
+  },
+}
+
+return require("neo-ds.theme").define(theme)
+```
+
+For larger themes, annotating subtrees can make the registry easier to use while editing:
+
+```lua
+---@type NeoDs.ThemePalette
+local palette = {
+  background = {
+    primary = "primitive.neutral.0",
+    secondary = "primitive.neutral.100",
+    cursorline = "primitive.neutral.50",
+  },
+  syntax = {
+    keyword = {
+      primary = "accent.secondary",
+      secondary = "foreground.secondary",
+    },
+    ["function"] = {
+      _ = "accent.tertiary",
+      definition = "syntax.function",
+    },
+  },
+}
+```
 
 ## Similar Projects
 
@@ -117,14 +187,17 @@ With lazy.nvim:
 Configure optional overrides before loading a colorscheme:
 
 ```lua
+---@type NeoDs.ThemePalette
+local palette = {
+  -- accent = { primary = "#0f62fe" },
+}
+
 require("neo-ds").setup({
   integrations = {
     community = true,
     snacks = true,
   },
-  palette = {
-    -- accent = { primary = "#0f62fe" },
-  },
+  palette = palette,
   roles = {
     -- ["entity.directory"] = { fg = "accent.primary", style = "bold" },
   },
