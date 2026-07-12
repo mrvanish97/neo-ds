@@ -1,9 +1,26 @@
-# neo-ds — Neovim Design System
+# neo-ds - Neovim Design System
 
-`neo-ds` stands for **Neovim Design System**. It is a semantic colorscheme framework for Neovim: themes provide concrete colors while editor and plugin integrations consume stable design-system roles.
+`neo-ds` stands for **Neovim Design System**.
 
-> [!CAUTION]
-> This repository is 100% vibe-coded. No human has ever read a single line of this code. My sincere apologies to all Lua and Neovim enthusiasts who find the solutions in this repository insulting to their taste.
+Neovim themes usually wire colors directly to highlight groups: `Normal`, `CursorLine`, `DiagnosticError`, `SnacksPickerMatch`, `TelescopeSelection`, Tree-sitter captures, and hundreds of other names owned by different parts of the editor and plugin ecosystem.
+
+That works, but it does not scale well. The same visual decision gets repeated in many places, and each integration has to decide for itself what a match, border, selected item, warning, reference, or inactive surface should look like.
+
+`neo-ds` exists to put a semantic mapping layer between meaning and colorization.
+
+Instead of every integration picking concrete colors, integrations describe what something means:
+
+```text
+popup
+float.border
+interaction.match
+diagnostic.error
+git.added
+entity.directory
+syntax.keyword.primary
+```
+
+Concrete themes provide color palettes. `neo-ds` maps those semantic roles to Neovim highlight groups.
 
 The data flow is:
 
@@ -11,9 +28,29 @@ The data flow is:
 primitives -> semantic palette -> roles -> highlight integrations
 ```
 
-Theme integrations never depend on a concrete primitive such as `primitive.blue.60`. They use roles such as `popup`, `interaction.match`, `diagnostic.error`, and `git.added`, allowing the same integration to work with every light and dark theme.
+This gives theme authors one place to define the visual system, and integration authors one stable vocabulary to target. A picker match, a search result, a diagnostic, and a Git diff can stay visually consistent without every plugin mapping knowing the exact hex colors.
 
-Concrete themes must be created with `require("neo-ds.theme").define({...})`. The constructor provides an exact `NeoDs.Theme` LuaLS contract and rejects unknown fields, malformed palette branches, role overrides, and direct highlight overrides at runtime.
+> [!CAUTION]
+> This repository is 100% vibe-coded. No human has ever read a single line of this code. My sincere apologies to all Lua and Neovim enthusiasts who find the solutions in this repository insulting to their taste.
+
+## What This Is
+
+`neo-ds` is a framework, not a colorscheme.
+
+It intentionally does not ship a concrete theme. It provides:
+
+- a typed concrete theme contract
+- palette reference validation
+- semantic role compilation
+- Neovim highlight generation
+- editor, Tree-sitter, LSP, and plugin integrations
+- optional visualization of palette references through `nvim-colorizer.lua`
+
+Concrete themes must be created with `require("neo-ds.theme").define({...})`. The constructor provides a `NeoDs.Theme` LuaLS contract and rejects unknown fields, malformed palette branches, role overrides, and direct highlight overrides at runtime.
+
+## Theme Examples
+
+- [ycode-nvim-theme](https://github.com/mrvanish97/ycode-nvim-theme) - a thin concrete theme package built on top of `neo-ds`
 
 ## Requirements
 
@@ -22,7 +59,9 @@ Concrete themes must be created with `require("neo-ds.theme").define({...})`. Th
 
 ## Setup
 
-Install with your preferred plugin manager. With lazy.nvim:
+Install `neo-ds` first, then install a compatible theme.
+
+With lazy.nvim:
 
 ```lua
 {
@@ -31,6 +70,16 @@ Install with your preferred plugin manager. With lazy.nvim:
   priority = 1000,
   config = function()
     require("neo-ds").setup({})
+  end,
+},
+{
+  "mrvanish97/ycode-nvim-theme",
+  lazy = false,
+  priority = 999,
+  dependencies = { "mrvanish97/neo-ds" },
+  config = function()
+    vim.opt.background = "light"
+    vim.cmd.colorscheme("ycode-owned-light")
   end,
 }
 ```
@@ -53,10 +102,7 @@ require("neo-ds").setup({
     -- MyHighlight = "interaction.match",
   },
 })
-
 ```
-
-`neo-ds` is a framework, not a colorscheme, and intentionally bundles no concrete themes. Install a compatible theme separately and load its colorscheme after calling `setup()`.
 
 Use `:NeoDsReload` after changing setup options, and `:checkhealth neo-ds` to check the framework and its integrations.
 
@@ -76,9 +122,9 @@ require("neo-ds").setup({
 
 The `snacks` integration covers shared windows, picker/explorer, dashboard, input, notifier, indent/scope, scratch, and zen UI. It only declares highlight groups; Snacks does not need to be installed for the theme to compile.
 
-The `community` integration currently contains the legacy mappings for Telescope, Neo-tree, Oil, Diffview, nvim-cmp, Mason, lazy.nvim, DAP UI, Barbecue, Navic, and related plugins. These mappings can be extracted into individual modules without changing the compiler or public configuration shape.
+The `community` integration currently contains mappings for Telescope, Neo-tree, Oil, Diffview, nvim-cmp, Mason, lazy.nvim, DAP UI, Barbecue, Navic, and related plugins. These mappings can be extracted into individual modules without changing the compiler or public configuration shape.
 
-## Writing an integration
+## Writing an Integration
 
 An integration returns raw highlight mappings expressed through roles and semantic tokens:
 
@@ -101,11 +147,12 @@ Register the module in `lua/neo-ds/integrations/init.lua` and add its default to
 
 ## Validation
 
-From the Neovim configuration directory:
+From the repository root:
 
 ```sh
 nvim --headless -u NONE -l scripts/neo-ds-smoke.lua
 nvim --headless -u NONE -l scripts/neo-ds-highlight-report.lua
+git diff --check
 ```
 
 The smoke test compiles and reloads a private test fixture, verifies integration controls and representative Snacks highlights, and ensures an invalid configuration cannot clear the active colorscheme.
