@@ -34,6 +34,15 @@ Concrete themes must be created with `require("neo-ds.theme").define({...})`. Th
 
 The semantic palette contract is documented in [lua/neo-ds/types.lua](lua/neo-ds/types.lua). Treat that file as the registry for available semantic tokens: it contains the hierarchy, LuaLS types, and short descriptions for every palette field that a concrete theme may define.
 
+Theme packages can get full LuaLS navigation and completion by checking in a `.luarc.json` that adds the sibling `neo-ds/lua` tree to `workspace.library`. Do not ignore that file if you want the editor support to travel with the theme repo. In the common `~/proj/<theme>` layout, this is usually enough:
+
+```json
+{
+  "workspace.library": ["../neo-ds/lua"],
+  "workspace.checkThirdParty": false
+}
+```
+
 ## How It Works
 
 The internal flow is:
