@@ -23,8 +23,8 @@ local function parse(ctx)
     return
   end
 
-  -- `get` delegates to compiler.resolve_token, so aliases, parent fallbacks,
-  -- primitives, and cycle detection have exactly one implementation.
+  -- `get` delegates to compiler.resolve_token, so aliases, primitives, and
+  -- cycle detection have exactly one implementation.
   local ok, color = pcall(require("neo-ds").get, candidate)
   if not ok or type(color) ~= "string" or not color:match("^#%x%x%x%x%x%x$") then
     return

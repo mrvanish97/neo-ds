@@ -49,27 +49,27 @@ function M.theme()
     normal = {
       a = M.role("chrome.mode.normal"),
       b = M.color({ fg = "foreground.primary", bg = "background.secondary" }),
-      c = M.color({ fg = "foreground.secondary", bg = "background.secondary" }),
+      c = M.color({ fg = "foreground.secondary", bg = "background.editor" }),
     },
     insert = {
       a = M.role("chrome.mode.insert"),
       b = M.color({ fg = "foreground.primary", bg = "background.secondary" }),
-      c = M.color({ fg = "foreground.secondary", bg = "background.secondary" }),
+      c = M.color({ fg = "foreground.secondary", bg = "background.editor" }),
     },
     visual = {
       a = M.role("chrome.mode.visual"),
       b = M.color({ fg = "foreground.primary", bg = "background.secondary" }),
-      c = M.color({ fg = "foreground.secondary", bg = "background.secondary" }),
+      c = M.color({ fg = "foreground.secondary", bg = "background.editor" }),
     },
     replace = {
       a = M.role("chrome.mode.replace"),
       b = M.color({ fg = "foreground.primary", bg = "background.secondary" }),
-      c = M.color({ fg = "foreground.secondary", bg = "background.secondary" }),
+      c = M.color({ fg = "foreground.secondary", bg = "background.editor" }),
     },
     command = {
       a = M.role("chrome.mode.command"),
       b = M.color({ fg = "foreground.primary", bg = "background.secondary" }),
-      c = M.color({ fg = "foreground.secondary", bg = "background.secondary" }),
+      c = M.color({ fg = "foreground.secondary", bg = "background.editor" }),
     },
     inactive = {
       a = M.color({ fg = "foreground.muted", bg = "background.secondary", gui = "bold" }),

@@ -107,10 +107,6 @@ local function palette_direct_lookup(palette, name)
   return node
 end
 
-local function palette_parent(name)
-  return name:match("^(.*)%.[^.]+$")
-end
-
 function M.compile_spec(spec, config, path)
   if spec.link then
     return { link = spec.link }
@@ -154,10 +150,6 @@ function M.resolve_token(name, config, path, seen)
 
   local raw = palette_direct_lookup(config.palette, name)
   if raw == nil then
-    local parent = palette_parent(name)
-    if parent then
-      return M.resolve_token(parent, config, path or name, seen)
-    end
     error(("neo-ds palette color %q referenced by %s is not defined"):format(name, path or "palette"))
   end
 

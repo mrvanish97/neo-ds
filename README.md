@@ -30,9 +30,9 @@ It intentionally does not ship a concrete theme. It provides:
 - editor, Tree-sitter, LSP, and plugin integrations
 - optional visualization of palette references through `nvim-colorizer.lua`
 
-Concrete themes must be created with `require("neo-ds.theme").define({...})`. The `NeoDs.Theme` LuaLS contract documents the theme shape, and the constructor rejects unknown fields, malformed palette branches, role overrides, and direct highlight overrides at runtime.
+Concrete themes must be created with `require("neo-ds.theme").define({...})`. The `NeoDs.Theme` LuaLS contract documents the theme shape, and the constructor rejects missing or unknown fields, malformed palette branches, role overrides, and direct highlight overrides at runtime.
 
-The semantic palette contract is documented in [lua/neo-ds/types.lua](lua/neo-ds/types.lua). Treat that file as the registry for available semantic tokens: it contains the hierarchy, LuaLS types, and short descriptions for every palette field that a concrete theme may define.
+The semantic palette contract is documented in [lua/neo-ds/types.lua](lua/neo-ds/types.lua). Treat that file as the registry for available semantic tokens: it contains the hierarchy, LuaLS types, and short descriptions for every palette field that a concrete theme must define.
 
 Theme packages can get full LuaLS navigation and completion by checking in a `.luarc.json` that adds the sibling `neo-ds/lua` tree to `workspace.library`. Do not ignore that file if you want the editor support to travel with the theme repo. In the common `~/proj/<theme>` layout, this is usually enough:
 
@@ -51,7 +51,7 @@ The internal flow is:
 primitives -> semantic palette -> roles -> highlight integrations
 ```
 
-Integrations should target semantic roles such as `popup`, `interaction.match`, `diagnostic.error`, `git.added`, `entity.directory`, and `syntax.keyword.primary`. They should not depend on concrete primitive colors such as `primitive.blue.60`.
+Integrations should target semantic roles such as `popup`, `interaction.match`, `diagnostic.error`, `git.added`, `entity.directory`, and `syntax.keyword.primary`. Use `syntax.keyword.secondary` for import-, storage-, modifier-, operator-, and qualifier-like tokens where the adapter exposes them. Do not depend on concrete primitive colors such as `primitive.blue.60`.
 
 That separation lets the same integration work with different light and dark themes while preserving the theme author's visual intent.
 
@@ -61,95 +61,19 @@ That separation lets the same integration work with different light and dark the
 
 ## Writing a Theme
 
-Concrete themes should stay palette-only. They define raw primitives, map those primitives into the semantic palette, and let `neo-ds` compile roles and integrations.
+Concrete themes should stay palette-only. They define raw primitives, map those primitives into the complete semantic palette, and let `neo-ds` compile roles and integrations.
+
+`neo-ds` does not provide palette values or visual fallbacks. Every semantic leaf is required. A theme may intentionally alias several leaves to the same primitive or semantic token, but that visual decision belongs in the concrete theme.
 
 Use the LuaLS types from [lua/neo-ds/types.lua](lua/neo-ds/types.lua) when writing theme files. The annotations are not required at runtime; `require("neo-ds.theme").define()` still validates plain Lua tables. They are recommended because they make the semantic token hierarchy discoverable through editor completion and keep theme data aligned with the documented contract.
 
-Create a colorscheme file such as `colors/example-light.lua`:
+Use [testdata/neo-ds/theme.lua](testdata/neo-ds/theme.lua) as a complete local scaffold, or [ycode-nvim-theme](https://github.com/mrvanish97/ycode-nvim-theme) as a concrete package example. A colorscheme loads the validated table with:
 
 ```lua
----@type NeoDs.Theme
-local theme = {
-  name = "example-light",
-  background = "light",
-
-  primitives = {
-    neutral = {
-      ["0"] = "#ffffff",
-      ["100"] = "#f0f0f0",
-      ["600"] = "#68717a",
-      ["1000"] = "#000000",
-    },
-
-    blue = {
-      primary = "#0f68a0",
-      selection = "#dcecff",
-    },
-
-    magenta = {
-      primary = "#ad3da4",
-    },
-
-    red = {
-      primary = "#d12f1b",
-    },
-  },
-
-  palette = {
-    background = {
-      primary = "primitive.neutral.0",
-      secondary = "primitive.neutral.100",
-      selection = "primitive.blue.selection",
-    },
-
-    foreground = {
-      primary = "primitive.neutral.1000",
-      secondary = "primitive.neutral.600",
-    },
-
-    accent = {
-      primary = "primitive.blue.primary",
-      secondary = "primitive.magenta.primary",
-    },
-
-    feedback = {
-      danger = "primitive.red.primary",
-    },
-
-    syntax = {
-      keyword = {
-        primary = "accent.secondary",
-        secondary = "foreground.primary",
-      },
-    },
-  },
-}
-
 require("neo-ds").load(require("neo-ds.theme").define(theme))
 ```
 
-For larger themes, annotating subtrees can make the registry easier to use while editing:
-
-```lua
----@type NeoDs.ThemePalette
-local palette = {
-  background = {
-    primary = "primitive.neutral.0",
-    secondary = "primitive.neutral.100",
-    cursorline = "primitive.neutral.50",
-  },
-  syntax = {
-    keyword = {
-      primary = "accent.secondary",
-      secondary = "foreground.secondary",
-    },
-    ["function"] = {
-      _ = "accent.tertiary",
-      definition = "syntax.function",
-    },
-  },
-}
-```
+For larger themes, annotate complete subtrees with the corresponding types such as `NeoDs.BackgroundPalette` or `NeoDs.SyntaxPalette` to keep completion focused while editing.
 
 ## Similar Projects
 
@@ -237,7 +161,7 @@ require("neo-ds").setup({
 })
 ```
 
-The `snacks` integration covers shared windows, picker/explorer, dashboard, input, notifier, indent/scope, scratch, and zen UI. It only declares highlight groups; Snacks does not need to be installed for the theme to compile.
+The `snacks` integration covers shared windows, picker/explorer, dashboard, input, notifier, indent/scope, scratch, and zen UI. Its `groups()` function declares highlight mappings, while `config()` returns optional runtime settings for ordinary/active indent colors and the Zen backdrop. Snacks does not need to be installed for the theme to compile.
 
 The `community` integration currently contains mappings for Telescope, Neo-tree, Oil, Diffview, nvim-cmp, Mason, lazy.nvim, DAP UI, Barbecue, Navic, and related plugins. These mappings can be extracted into individual modules without changing the compiler or public configuration shape.
 

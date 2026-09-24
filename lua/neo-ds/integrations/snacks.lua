@@ -86,29 +86,29 @@ function M.groups()
     SnacksNotifierHistory = "editor",
     SnacksNotifierHistoryTitle = "foreground.strong",
     SnacksNotifierHistoryDateTime = "foreground.muted",
-    SnacksNotifierMinimal = "float",
+    SnacksNotifierMinimal = { fg = "foreground.primary", bg = "background.notification" },
 
-    SnacksNotifierInfo = "float",
+    SnacksNotifierInfo = { fg = "foreground.primary", bg = "background.notification" },
     SnacksNotifierIconInfo = "diagnostic.info",
     SnacksNotifierBorderInfo = "diagnostic.info",
     SnacksNotifierTitleInfo = "diagnostic.info",
     SnacksNotifierFooterInfo = "diagnostic.info",
-    SnacksNotifierWarn = "float",
+    SnacksNotifierWarn = { fg = "foreground.primary", bg = "background.notification" },
     SnacksNotifierIconWarn = "diagnostic.warn",
     SnacksNotifierBorderWarn = "diagnostic.warn",
     SnacksNotifierTitleWarn = "diagnostic.warn",
     SnacksNotifierFooterWarn = "diagnostic.warn",
-    SnacksNotifierError = "float",
+    SnacksNotifierError = { fg = "foreground.primary", bg = "background.notification" },
     SnacksNotifierIconError = "diagnostic.error",
     SnacksNotifierBorderError = "diagnostic.error",
     SnacksNotifierTitleError = "diagnostic.error",
     SnacksNotifierFooterError = "diagnostic.error",
-    SnacksNotifierDebug = "float",
+    SnacksNotifierDebug = { fg = "foreground.primary", bg = "background.notification" },
     SnacksNotifierIconDebug = "foreground.muted",
     SnacksNotifierBorderDebug = "foreground.muted",
     SnacksNotifierTitleDebug = "foreground.muted",
     SnacksNotifierFooterDebug = "foreground.muted",
-    SnacksNotifierTrace = "float",
+    SnacksNotifierTrace = { fg = "foreground.primary", bg = "background.notification" },
     SnacksNotifierIconTrace = "foreground.muted",
     SnacksNotifierBorderTrace = "foreground.muted",
     SnacksNotifierTitleTrace = "foreground.muted",
@@ -116,10 +116,40 @@ function M.groups()
 
     -- Indentation, scope, scratch and zen
     SnacksIndent = "editor.whitespace",
-    SnacksIndentScope = { fg = "accent.tertiary" },
-    SnacksIndentChunk = "interaction.active",
+    SnacksIndentScope = { fg = "accent.primary" },
+    SnacksIndentChunk = { fg = "accent.primary" },
     SnacksScratchTitle = "foreground.strong",
     SnacksZenIcon = "diagnostic.warn",
+  }
+end
+
+---Return Snacks runtime options that depend on resolved semantic colors.
+---@return table
+function M.config()
+  local ds = require("neo-ds")
+
+  return {
+    indent = {
+      enabled = true,
+      indent = {
+        hl = "SnacksIndent",
+      },
+      scope = {
+        hl = "SnacksIndentScope",
+      },
+      chunk = {
+        hl = "SnacksIndentChunk",
+      },
+    },
+    zen = {
+      win = {
+        backdrop = {
+          bg = ds.get("background.backdrop"),
+          blend = 50,
+          transparent = false,
+        },
+      },
+    },
   }
 end
 

@@ -15,8 +15,8 @@ return function()
     ["@lsp.type.function"] = "syntax.function.call",
     ["@lsp.type.method"] = "syntax.function.call",
     ["@lsp.type.macro"] = "syntax.preprocessor",
-    ["@lsp.type.decorator"] = "syntax.annotation",
-    ["@lsp.type.annotation"] = "syntax.annotation",
+    ["@lsp.type.decorator"] = { fg = "foreground.primary", style = "bold" },
+    ["@lsp.type.annotation"] = "syntax.type",
     ["@lsp.type.keyword"] = {},
     ["@lsp.type.comment"] = "syntax.comment",
     ["@lsp.type.string"] = "syntax.string",
@@ -25,7 +25,7 @@ return function()
     ["@lsp.mod.static"] = { style = "italic" },
     ["@lsp.mod.deprecated"] = { style = "strikethrough" },
     ["@lsp.typemod.variable.readonly.go"] = "syntax.constant",
-    ["@lsp.typemod.property.readonly.python"] = "syntax.constant",
+    ["@lsp.typemod.property.readonly.python"] = {},
     ["@lsp.typemod.property.static.java"] = { link = "Constant" },
   }
 
@@ -50,6 +50,8 @@ return function()
   groups["@lsp.mod.static.python"] = {}
   groups["@lsp.typemod.class.parameter.python"] = "syntax.variable"
   groups["@lsp.typemod.property.classMember.python"] = "syntax.property"
+  groups["@lsp.typemod.property.declaration.python"] = "syntax.function.definition"
+  groups["@lsp.typemod.property.definition.python"] = "syntax.function.definition"
   groups["@lsp.typemod.property.static.python"] = "syntax.property"
   groups["@lsp.typemod.method.builtin.python"] = "syntax.function.call"
   groups["@lsp.typemod.method.classMember.python"] = "syntax.function.call"

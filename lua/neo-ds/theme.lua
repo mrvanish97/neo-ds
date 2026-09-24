@@ -12,6 +12,8 @@ local schema = {
     editor = leaf,
     sidebar = leaf,
     float = leaf,
+    notification = leaf,
+    backdrop = leaf,
     popup = { _ = leaf, selected = leaf, scrollbar = leaf, thumb = leaf },
     search = { _ = leaf, active = leaf },
     reference = { _ = leaf, subtle = leaf, write = leaf },
@@ -65,12 +67,21 @@ local function fail(name, path, message)
   error(('neo-ds theme %q: %s %s'):format(name or "<unnamed>", path, message), 0)
 end
 
+local function sorted_keys(node)
+  local keys = vim.tbl_keys(node)
+  table.sort(keys, function(left, right)
+    return tostring(left) < tostring(right)
+  end)
+  return keys
+end
+
 local function validate_palette(node, expected, name, path)
   if type(node) ~= "table" then
     fail(name, path, "must be a keyed table")
   end
 
-  for key, value in pairs(node) do
+  for _, key in ipairs(sorted_keys(node)) do
+    local value = node[key]
     if type(key) ~= "string" then
       fail(name, path, "must use string keys")
     end
@@ -84,6 +95,12 @@ local function validate_palette(node, expected, name, path)
       end
     else
       validate_palette(value, child, name, child_path)
+    end
+  end
+
+  for _, key in ipairs(sorted_keys(expected)) do
+    if node[key] == nil then
+      fail(name, path .. "." .. key, "is required")
     end
   end
 end

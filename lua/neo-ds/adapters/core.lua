@@ -61,7 +61,7 @@ return function()
 
     ModeMsg = "message.mode",
     MoreMsg = "message",
-    MsgArea = "message",
+    MsgArea = { fg = "foreground.primary" },
     WarningMsg = "message.warning",
     ErrorMsg = "message.error",
     Question = "message.question",

@@ -1,4 +1,5 @@
 local compiler = require("neo-ds.compiler")
+local theme = require("neo-ds.theme")
 
 local M = {}
 
@@ -13,7 +14,7 @@ local adapter_names = {
 local default_config = {
   background = "light",
   primitives = {},
-  palette = require("neo-ds.palette"),
+  palette = {},
   roles = require("neo-ds.roles"),
   integrations = {
     community = true,
@@ -88,11 +89,16 @@ function M.apply(opts)
 end
 
 function M.load(opts)
+  if not theme.is_defined(opts) then
+    error('neo-ds load: concrete themes must be created with require("neo-ds.theme").define()', 0)
+  end
+
   local config = merge_config(vim.tbl_deep_extend("force", vim.deepcopy(opts or {}), user_config))
   local highlights = compile_highlights(config)
 
   vim.opt.termguicolors = true
   vim.opt.background = config.background
+  vim.opt.winborder = "rounded"
   vim.cmd("hi clear")
   if vim.fn.exists("syntax_on") == 1 then
     vim.cmd("syntax reset")

@@ -7,13 +7,13 @@ return {
   ["editor.cursorline.number"] = { fg = "foreground.primary", bg = "background.cursorline", style = "bold" },
   ["editor.line.number"] = { fg = "foreground.muted" },
   ["editor.non.text"] = { fg = "background.tertiary" },
-  ["editor.whitespace"] = { fg = "border.primary" },
+  ["editor.whitespace"] = { inherit = false, fg = "border.primary" },
   ["editor.border"] = { fg = "border.primary" },
   ["editor.fold"] = { fg = "foreground.secondary", bg = "background.secondary" },
   ["editor.color.column"] = { inherit = false, bg = "background.feedback.danger" },
 
-  float = { fg = "foreground.primary", bg = "background.float" },
-  ["float.border"] = { fg = "border.primary", bg = "background.float" },
+  float = { fg = "foreground.primary", bg = "background.editor" },
+  ["float.border"] = { fg = "border.primary", bg = "background.editor" },
 
   popup = { fg = "foreground.primary", bg = "background.popup" },
   ["popup.selected"] = { bg = "background.popup.selected" },

@@ -22,7 +22,6 @@ M.treesitter = {
     "@keyword.debug",
     "@keyword.import",
     "@keyword.modifier",
-    "@keyword.operator",
     "@keyword.storage",
     "@type.qualifier",
   },
